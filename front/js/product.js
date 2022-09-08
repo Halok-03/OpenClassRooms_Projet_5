@@ -66,6 +66,8 @@ let addCanape = function(canape){
     // Si la quantité saisie n'est pas bonne on n'enregistre pas //
     if  (canape.quantité <= 0 || canape.quantité > 100) {
         alert("La quantité n'est pas bonne, veuillez saisir une quantité comprise entre 1 et 100")
+    }else if (canape.couleur == ""){
+        alert("Veuillez choisir une couleur")
     // Si la quantité saisie est bonne et que le produit n'est pas deja présent on le rajoute //
     }else if ( rechercheBonProduit == undefined){
             newcanape.push(canape); 
