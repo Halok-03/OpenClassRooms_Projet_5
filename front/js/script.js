@@ -5,9 +5,10 @@ fetch('http://localhost:3000/api/products')
     return response.json();
 })
 .then (function(produits){
-    for(produit of produits){  // Pour chaque produit dans l'API Produits on créer la fonction carteHtml//
+      // Pour chaque produit dans l'API Produits on créer la fonction carteHtml //
+      for(produit of produits){
         carteHtml(produit);
-        }
+      }
 })
 
 // Création d'une fonction ajoutant chaque ligne de la carte pour chaque produit de l'API//
@@ -31,6 +32,7 @@ articleHtml = document.createElement('article');
 articleHtml.appendChild(imgHtml);
 articleHtml.appendChild(titleHtml);
 articleHtml.appendChild(pHtml);
+
 
 // création du <a> , modifciation du href puis ajout du <article> //
 aHtml = document.createElement('a');
