@@ -1,22 +1,21 @@
 let produitPaniers = JSON.parse(localStorage.getItem('produitPanier'))// Recupere le localstorage et le met en tableau d'objet //
 
-for (let i = 0 ; i < produitPaniers.length ; i++) {
-    fetch(`http://localhost:3000/api/products/${produitPaniers[i].id}`)
+ for (produitPanier of produitPaniers) {
+    fetch(`http://localhost:3000/api/products/${produitPanier.id}`)
     .then(function(response){
         return response.json();
     })
     .then (function(canape){
+        affichagePanier(canape)
+        totalArticle(canape)
+        totalPrix(canape)
         
+})
+ }
 
-    })
-    .catch(erreur => console.log('erreur', erreur));
-}
+let affichagePanier = function(canape) {
+    let bonProduit = produitPaniers.find(p => p.id == canape._id)  ;
 
-
-
-// Fonction ajoutant le visuel de chaque canapé contenu dans le panier // 
-
-function affichagePanier(canape) {
     // Création de l'image //
 
     imgHtml = document.createElement('img'); 
@@ -31,7 +30,7 @@ function affichagePanier(canape) {
     nomHtml = document.createElement('h2');
     nomHtml.innerHTML = `${canape.name}`;
     couleurHtml = document.createElement('p');
-    couleurHtml.innerHTML = `${produitPaniers[j].couleur}`;
+    couleurHtml.innerHTML = `${bonProduit.couleur}`;
     prixHtml = document.createElement('p');
     prixHtml.innerHTML = `${canape.price} €`;
     divDescriptionHtml = document.createElement('div'); // Création de la div contenant nom,couleur et quantité //
@@ -43,13 +42,13 @@ function affichagePanier(canape) {
     // Création de la partie affichant la quantité // 
 
     quantiteHtml = document.createElement('p');
-    quantiteHtml.innerHTML = `Qté : ${produitPaniers[j].quantité}`;
+    quantiteHtml.innerHTML = `Qté : ${bonProduit.quantité}`;
     inputQuantiteHtml = document.createElement('input');
     inputQuantiteHtml.setAttribute("type", "number");
     inputQuantiteHtml.setAttribute("name", "itemQuantity");
     inputQuantiteHtml.setAttribute("min", "1");
     inputQuantiteHtml.setAttribute("max", "100");
-    inputQuantiteHtml.setAttribute("value", `${produitPaniers[j].quantite}`);
+    inputQuantiteHtml.setAttribute("value", `${bonProduit.quantite}`);
     inputQuantiteHtml.classList.add('itemQuantity');
     divQuantiteHtml = document.createElement('div'); // Création de la div contenant la quantité et l'input //
     divQuantiteHtml.classList.add('cart__item__content__settings__quantity');
@@ -84,24 +83,25 @@ function affichagePanier(canape) {
 
     articleHtml = document.createElement('article');
     articleHtml.classList.add('cart__item');
-    articleHtml.setAttribute('data-id', `${produitPaniers [j].id}`);
-    articleHtml.setAttribute('data-color', `${produitPaniers[j].couleur}`)
+    articleHtml.setAttribute('data-id', `${bonProduit.id}`);
+    articleHtml.setAttribute('data-color', `${bonProduit.couleur}`)
     articleHtml.appendChild(divImgHtml);
     articleHtml.appendChild(divContenuHtml);
 
     // Mettre l'article dans l'id cart__items // 
 
     document.querySelector('#cart__items').appendChild(articleHtml);
+
+    // Appel affichage quantité et prix // 
     
+
 }
-
-
 
 // Fonction pour calculer et afficher le nombre total d'article dans le panier // 
 
 let totalArticle = function(canape) {
     let somme = 0
-    for (canape of canapesJSON){
+    for (canape of produitPaniers){
        var nbrQuantite = parseInt(canape.quantité);
        somme += nbrQuantite
     }
@@ -112,13 +112,14 @@ let totalArticle = function(canape) {
 
 
 let totalPrix = function(canape) {
-    let sommePrix = 0
-    for (canape of canapesJSON){
-       var prix = parseInt(canape.prix);
-       var quantite = parseInt(canape.quantité);
-       var totalPrix = prix*quantite;
-       sommePrix += totalPrix
-    }
+    let bonProduit = produitPaniers.find(p => p.id == canape._id)  ;
+    let prix = parseInt(canape.price);
+    let quantite = parseInt(bonProduit.quantité);
+    let totalPrix = prix*quantite;
+    let sommePrix = 0;
+    sommePrix += totalPrix;
+
+    console.log(sommePrix);
     document.querySelector('#totalPrice').innerHTML = sommePrix;
 }
 
