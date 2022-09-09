@@ -71,7 +71,6 @@ let addCanape = function(canape){
     // Si la quantité saisie est bonne et que le produit n'est pas deja présent on le rajoute //
     }else if ( rechercheBonProduit == undefined){
             newcanape.push(canape); 
-            console.log("sa existe pas ajoute la")
             saveCanape(newcanape);
     // Si la quantité saisie est bonne et que le produit est deja présent on ajoute la quantoté saisie à la quantité deja enregistrer // 
     } else {
@@ -79,7 +78,6 @@ let addCanape = function(canape){
         let nbNouveau = parseInt(canape.quantité);
         nbPresent += nbNouveau
         rechercheBonProduit.quantité = nbPresent.toString() // On remet ensuite en chaine de caractere // 
-        console.log(rechercheBonProduit.quantité)
         // Si cette nouvelle quantité dépasse les 100 on n'enregistre pas et on met une alerte //
         if (rechercheBonProduit.quantité > 100){
             alert("Tu ne peux pas commander plus de 100 fois le même article")
@@ -97,7 +95,7 @@ let ajouterPanier = function (produit){
         let canape = {
             id : `${produit._id}`,
             couleur : document.getElementById("colors").value,
-            quantité : document.getElementById("quantity").value
+            quantité : document.getElementById("quantity").value,
         }
         addCanape(canape)
     })
