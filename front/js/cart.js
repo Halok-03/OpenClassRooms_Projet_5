@@ -9,7 +9,7 @@ let produitPaniers = JSON.parse(localStorage.getItem('produitPanier'))// Recuper
         affichagePanier(canape)
         totalArticle(canape)
         totalPrix(canape)
-        
+        additionTotal()
 })
  }
 
@@ -110,16 +110,23 @@ let totalArticle = function(canape) {
 
 //Fonction pour calculer et afficher le prix total des articles // 
 
+let prixTotal = [];
 
 let totalPrix = function(canape) {
     let bonProduit = produitPaniers.find(p => p.id == canape._id)  ;
     let prix = parseInt(canape.price);
     let quantite = parseInt(bonProduit.quantité);
     let totalPrix = prix*quantite;
-    let sommePrix = 0;
-    sommePrix += totalPrix;
+    prixTotal.push(totalPrix);
+    
+}
 
-    console.log(sommePrix);
-    document.querySelector('#totalPrice').innerHTML = sommePrix;
+// Fonction qui ajoute toutes les valeurs du array totalPrix //
+let additionTotal = function(){
+    let prixFinal = 0;
+    for (chaquePrix of prixTotal){
+        prixFinal += chaquePrix
+    }
+    document.querySelector('#totalPrice').innerHTML = prixFinal;
 }
 
