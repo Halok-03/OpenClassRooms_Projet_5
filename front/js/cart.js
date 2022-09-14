@@ -10,7 +10,7 @@ let produitPaniers = JSON.parse(localStorage.getItem('produitPanier'))// Recuper
         totalArticle(canape)
         totalPrix(canape)
         additionTotal()
-})
+    })
  }
 
 let affichagePanier = function(canape) {
@@ -42,13 +42,13 @@ let affichagePanier = function(canape) {
     // Création de la partie affichant la quantité // 
 
     quantiteHtml = document.createElement('p');
-    quantiteHtml.innerHTML = `Qté : ${bonProduit.quantité}`;
+    quantiteHtml.innerHTML = `Qté : `;
     inputQuantiteHtml = document.createElement('input');
     inputQuantiteHtml.setAttribute("type", "number");
     inputQuantiteHtml.setAttribute("name", "itemQuantity");
     inputQuantiteHtml.setAttribute("min", "1");
     inputQuantiteHtml.setAttribute("max", "100");
-    inputQuantiteHtml.setAttribute("value", `${bonProduit.quantite}`);
+    inputQuantiteHtml.setAttribute("value", `${bonProduit.quantité}`);
     inputQuantiteHtml.classList.add('itemQuantity');
     divQuantiteHtml = document.createElement('div'); // Création de la div contenant la quantité et l'input //
     divQuantiteHtml.classList.add('cart__item__content__settings__quantity');
@@ -92,9 +92,7 @@ let affichagePanier = function(canape) {
 
     document.querySelector('#cart__items').appendChild(articleHtml);
 
-    // Appel affichage quantité et prix // 
-    
-
+    supprimerProduit()
 }
 
 // Fonction pour calculer et afficher le nombre total d'article dans le panier // 
@@ -108,9 +106,11 @@ let totalArticle = function(canape) {
     document.querySelector('#totalQuantity').innerHTML = somme;
 }
 
-//Fonction pour calculer et afficher le prix total des articles // 
+// Création d'un array pour stocker tout les prix totaux de chaque produit //
 
 let prixTotal = [];
+
+//Fonction pour calculer le prix Total de chaque produit et l'ajouter au array prixTotal // 
 
 let totalPrix = function(canape) {
     let bonProduit = produitPaniers.find(p => p.id == canape._id)  ;
@@ -121,12 +121,28 @@ let totalPrix = function(canape) {
     
 }
 
-// Fonction qui ajoute toutes les valeurs du array totalPrix //
+// Fonction qui ajoute toutes les valeurs du array totalPrix et qui l'affiche ensuite//
 let additionTotal = function(){
     let prixFinal = 0;
     for (chaquePrix of prixTotal){
         prixFinal += chaquePrix
     }
     document.querySelector('#totalPrice').innerHTML = prixFinal;
+}
+
+// Fonction qui sauvegarde un canapé dans localstorage en JSON //
+let saveCanape = function(canape){
+    localStorage.setItem("produitPanier", JSON.stringify(canape));
+}
+
+// Fonction qui supprime l'élément du localstorage // 
+let supprimerProduit = function(deleteItemId, color){ 
+    let produitPaniers = JSON.parse(localStorage.getItem('produitPanier'))
+    const deleteButton = document.querySelectorAll(".deleteItem");
+    console.log(deleteButton)
+    for (click of deleteButton){
+        click.addEventListener('click', function(){
+        console.log('ok sa marche')
+    })}
 }
 
