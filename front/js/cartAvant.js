@@ -1,22 +1,22 @@
 let produitPaniers = JSON.parse(localStorage.getItem('produitPanier'))// Recupere le localstorage et le met en tableau d'objet //
 
-
-fetch('http://localhost:3000/api/products')
-.then(function(response){
-    return response.json();
-})
-.then (function(canape){
-    affichagePanier(canape)
-    console.log(canape)
-    totalArticle(canape)
-    //totalPrix(canape)
-    //additionTotal()
-}
-)
-
+for (produitPanier of produitPaniers) {
+    fetch(`http://localhost:3000/api/products/${produitPanier.id}`)
+    .then(function(response){
+        return response.json();
+    })
+    .then (function(canape){
+        affichagePanier(canape)
+        totalArticle(canape)
+        totalPrix(canape)
+        additionTotal()
+        
+    })
+ }
+ 
 let affichagePanier = function(canape) {
     let bonProduit = produitPaniers.find(p => p.id == canape._id)  ;
-    
+
     // Création de l'image //
 
     imgHtml = document.createElement('img'); 
@@ -93,8 +93,8 @@ let affichagePanier = function(canape) {
 
     document.querySelector('#cart__items').appendChild(articleHtml);
 
+    supprimerProduit()
 }
-
 
 // Fonction pour calculer et afficher le nombre total d'article dans le panier // 
 
@@ -148,6 +148,7 @@ let supprimerProduit = function(){
                 let article = click.closest("article");
                 console.log(article);
                 article.remove();
+                
     }})
 }}
 

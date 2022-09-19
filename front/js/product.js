@@ -70,9 +70,11 @@ let addCanape = function(canape){
         alert("Veuillez choisir une couleur")
     // Si la quantité saisie est bonne et que le produit n'est pas deja présent on le rajoute //
     }else if ( rechercheBonProduit == undefined){
-            newcanape.push(canape); 
-            saveCanape(newcanape);
-    // Si la quantité saisie est bonne et que le produit est deja présent on ajoute la quantoté saisie à la quantité deja enregistrer // 
+        newcanape.push(canape); 
+        saveCanape(newcanape);
+        alert("Vous avez bien ajouté l'article au panier !")
+
+    // Si la quantité saisie est bonne et que le produit est deja présent on ajoute la quantité saisie à la quantité deja enregistrer // 
     } else {
         let nbPresent = parseInt(rechercheBonProduit.quantité);  // On doit mettre la quantité saisie et la quantité enregistré en nombre //
         let nbNouveau = parseInt(canape.quantité);
@@ -84,6 +86,7 @@ let addCanape = function(canape){
         // Si cette nouvelle quantité est comprise entre 1 et 100 on l'actualise // 
         } else {
             saveCanape(newcanape);
+            alert("La quantité a bien été mis à jour !")
         }       
     }
 }
