@@ -1,3 +1,4 @@
+let produitPaniers = JSON.parse(localStorage.getItem('produitPanier'))// Recupere le localstorage et le met en tableau d'objet //
 
 // Récupère l'API et renvoi la réponse en JSON //
 fetch('http://localhost:3000/api/products')
@@ -8,6 +9,7 @@ fetch('http://localhost:3000/api/products')
       // Pour chaque produit dans l'API Produits on créer la fonction carteHtml //
       for(produit of produits){
         carteHtml(produit);
+        totalArticle()
       }
 })
 
@@ -41,4 +43,15 @@ aHtml.appendChild(articleHtml);
 
 // Ajout d'un enfant A a l'id items // 
 document.querySelector('#items').appendChild(aHtml)
+}
+
+// Fonction pour calculer et afficher le nombre total d'article dans le panier // 
+let totalArticle = function() {
+  let somme = 0
+  for (canape of produitPaniers){
+      var nbrQuantite = parseInt(canape.quantité);
+      somme += nbrQuantite
+  }
+  let panier = document.querySelectorAll('nav a li')
+  panier[1].innerHTML = "panier " + '(' + somme + ')';
 }

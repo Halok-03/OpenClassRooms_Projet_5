@@ -1,4 +1,4 @@
-
+let produitPaniers = JSON.parse(localStorage.getItem('produitPanier'))// Recupere le localstorage et le met en tableau d'objet //
 
 let url = new URL (window.location.href); // Récupération de l'URL //
 let id = url.searchParams.get("id") // Récupération de l'id dans l'URL // 
@@ -12,6 +12,7 @@ fetch(`http://localhost:3000/api/products/${id}`)
 .then (function(produit){
     affichageProduit(produit);
     ajouterPanier(produit)
+    totalArticle()
 })
 
 let affichageProduit = function (produit){
@@ -101,5 +102,18 @@ let ajouterPanier = function (produit){
             quantité : document.getElementById("quantity").value,
         }
         addCanape(canape)
+        location.reload()
     })
     }
+
+// Fonction pour calculer et afficher le nombre total d'article dans le panier // 
+let totalArticle = function() {
+    let somme = 0
+    for (produit of produitPaniers){
+        var nbrQuantite = parseInt(produit.quantité);
+        somme += nbrQuantite
+    }
+    let panier = document.querySelectorAll('nav a li')
+    panier[1].innerHTML = "panier " + '(' + somme + ')';
+}
+    

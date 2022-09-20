@@ -1,22 +1,23 @@
 let produitPaniers = JSON.parse(localStorage.getItem('produitPanier'))// Recupere le localstorage et le met en tableau d'objet //
 
+for (produitPanier of produitPaniers) {
+    let canapLocalstorage = produitPanier
+    fetch(`http://localhost:3000/api/products/${produitPanier.id}`)
+    .then(function(response){
+        return response.json();
+    })
+    .then (function(canape){
+        affichagePanier(canape, canapLocalstorage)
+        totalArticle()
+        totalPrix(canape)
+        additionTotal()
+        
+    })
+ }
+ 
+let affichagePanier = function(canape, localStore) {
+    let bonProduit = localStore  ;
 
-fetch('http://localhost:3000/api/products')
-.then(function(response){
-    return response.json();
-})
-.then (function(canape){
-    affichagePanier(canape)
-    console.log(canape)
-    totalArticle(canape)
-    //totalPrix(canape)
-    //additionTotal()
-}
-)
-
-let affichagePanier = function(canape) {
-    let bonProduit = produitPaniers.find(p => p.id == canape._id)  ;
-    
     // Création de l'image //
 
     imgHtml = document.createElement('img'); 
@@ -93,12 +94,13 @@ let affichagePanier = function(canape) {
 
     document.querySelector('#cart__items').appendChild(articleHtml);
 
+    supprimerProduit(supprimerHtml)
+    
 }
-
 
 // Fonction pour calculer et afficher le nombre total d'article dans le panier // 
 
-let totalArticle = function(canape) {
+let totalArticle = function() {
     let somme = 0
     for (canape of produitPaniers){
        var nbrQuantite = parseInt(canape.quantité);
@@ -139,15 +141,23 @@ let saveCanape = function(canape){
 }
 
 // Fonction qui supprime l'élément du localstorage // 
-let supprimerProduit = function(){ 
-    const deleteButton = document.querySelectorAll(".deleteItem");
-    console.log(deleteButton)
-    for (let click of deleteButton){
-        click.addEventListener('click', function(ec){
+let supprimerProduit = function(elementHtml){ 
+        elementHtml.addEventListener('click', function(){
             if (window.confirm("Voulez-vous supprimez ?")){
-                let article = click.closest("article");
-                console.log(article);
+                let article = elementHtml.closest("article");
+                let id = article.dataset.id
+                let color = article.dataset.color
+                for (let i =0 ; i <produitPaniers.length; i++){
+                    if (produitPaniers[i].couleur == color && produitPaniers[i].id == id){
+                        produitPaniers.splice(i,1);
+                        saveCanape(produitPaniers);
+                        break;
+                    }
+                }
                 article.remove();
+                totalArticle()
+                totalPrix(canape)
+                additionTotal()
     }})
-}}
+}
 
