@@ -1,24 +1,33 @@
-let produitPaniers = JSON.parse(localStorage.getItem('produitPanier'))// Recupere le localstorage et le met en tableau d'objet //
+const produitPaniersStorage = JSON.parse(localStorage.getItem('produitPanier'));// Recupere le localstorage et le met en tableau d'objet //
+let productsWithPrice = []; // Créer un tableau vide pour stocker id , quantité et prix des produits dans le panier //
 
-for (produitPanier of produitPaniers) {
-    let canapLocalstorage = produitPanier
-    fetch(`http://localhost:3000/api/products/${produitPanier.id}`)
-    .then(function(response){
-        return response.json();
-    })
-    .then (function(canape){
-        affichagePanier(canape, canapLocalstorage)
-        totalArticle()
-        totalPrix(canape)
-        additionTotal()
-        
-    })
- }
- 
+if (produitPaniersStorage != null && produitPaniersStorage != undefined){
+    for (let produitPanier of produitPaniersStorage) {
+        fetch(`http://localhost:3000/api/products/${produitPanier.id}`)
+        .then(function(response){
+            return response.json();
+        })
+        .then (function(canape){
+            productsWithPrice.push({id: produitPanier.id, quantite: produitPanier.quantité, price: canape.price});
+            affichagePanier(canape, produitPanier);
+            totalArticle();
+            additionTotal()
+        })
+        .catch((err) => {
+            document.querySelector(".titles").innerHTML = "<h1>erreur 404</h1>";
+            console.log("erreur 404, sur ressource api:" + err);
+        });
+    }
+} else {
+    document.querySelector("h1").innerHTML = "Votre panier est vide"
+    document.querySelector("#totalQuantity").innerHTML = "0"
+    document.querySelector("#totalPrice").innerHTML = "0"
+}
+
 let affichagePanier = function(canape, localStore) {
     let bonProduit = localStore  ;
 
-    // Création de l'image //
+        // Création de l'image //
 
     imgHtml = document.createElement('img'); 
     imgHtml.setAttribute("src", `${canape.imageUrl}`)
@@ -95,14 +104,14 @@ let affichagePanier = function(canape, localStore) {
     document.querySelector('#cart__items').appendChild(articleHtml);
 
     supprimerProduit(supprimerHtml)
-    
-}
+    }
+
 
 // Fonction pour calculer et afficher le nombre total d'article dans le panier // 
 
 let totalArticle = function() {
     let somme = 0
-    for (canape of produitPaniers){
+    for (let canape of produitPaniersStorage){
        var nbrQuantite = parseInt(canape.quantité);
        somme += nbrQuantite
     }
@@ -111,26 +120,12 @@ let totalArticle = function() {
     panier[1].innerHTML = "panier " + '(' + somme + ')';
 }
 
-// Création d'un array pour stocker tout les prix totaux de chaque produit //
 
-let prixTotal = [];
-
-//Fonction pour calculer le prix Total de chaque produit et l'ajouter au array prixTotal // 
-
-let totalPrix = function(canape) {
-    let bonProduit = produitPaniers.find(p => p.id == canape._id)  ;
-    let prix = parseInt(canape.price);
-    let quantite = parseInt(bonProduit.quantité);
-    let totalPrix = prix*quantite;
-    prixTotal.push(totalPrix);
-    
-}
-
-// Fonction qui ajoute toutes les valeurs du array totalPrix et qui l'affiche ensuite//
+// Fonction qui ajoute toutes les prix du array productWithPrice et qui l'affiche ensuite//
 let additionTotal = function(){
     let prixFinal = 0;
-    for (chaquePrix of prixTotal){
-        prixFinal += chaquePrix
+    for (let productWithPrice of productsWithPrice){
+        prixFinal += productWithPrice.price * productWithPrice.quantite;
     }
     document.querySelector('#totalPrice').innerHTML = prixFinal;
 }
@@ -147,17 +142,25 @@ let supprimerProduit = function(elementHtml){
                 let article = elementHtml.closest("article");
                 let id = article.dataset.id
                 let color = article.dataset.color
-                for (let i =0 ; i <produitPaniers.length; i++){
-                    if (produitPaniers[i].couleur == color && produitPaniers[i].id == id){
-                        produitPaniers.splice(i,1);
-                        saveCanape(produitPaniers);
+                //update local storage
+                for (let i =0 ; i <produitPaniersStorage.length; i++){
+                    if (produitPaniersStorage[i].couleur == color && produitPaniersStorage[i].id == id){
+                        produitPaniersStorage.splice(i,1);
+                        productsWithPrice.splice(i,1);
+                        saveCanape(produitPaniersStorage);
                         break;
                     }
                 }
-                article.remove();
+                // Supprime l'article du dom et recalcule la quantité et le prix // 
+                article.remove(); 
                 totalArticle()
-                totalPrix(canape)
                 additionTotal()
+                // Si l'élément que nous venons de supprimer était le dernier on affiche que le panier est vide et on supprime intégralement le localStorage afin que quand on actualise la page il s'affiche encore//
+                if (produitPaniersStorage.length == 0){
+                    document.querySelector("h1").innerHTML = "Votre panier est vide"
+                    localStorage.clear();
+                }
+
     }})
 }
 

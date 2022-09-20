@@ -12,6 +12,10 @@ fetch('http://localhost:3000/api/products')
         totalArticle()
       }
 })
+.catch((err) => {
+  document.querySelector(".titles").innerHTML = "<h1>erreur 404</h1>";
+  console.log("erreur 404, sur ressource api:" + err);
+});
 
 // Création d'une fonction ajoutant chaque ligne de la carte pour chaque produit de l'API//
 let carteHtml = function(produit) {
@@ -48,10 +52,12 @@ document.querySelector('#items').appendChild(aHtml)
 // Fonction pour calculer et afficher le nombre total d'article dans le panier // 
 let totalArticle = function() {
   let somme = 0
+  if (produitPaniers != null){
   for (canape of produitPaniers){
       var nbrQuantite = parseInt(canape.quantité);
       somme += nbrQuantite
   }
   let panier = document.querySelectorAll('nav a li')
   panier[1].innerHTML = "panier " + '(' + somme + ')';
+}
 }

@@ -14,6 +14,10 @@ fetch(`http://localhost:3000/api/products/${id}`)
     ajouterPanier(produit)
     totalArticle()
 })
+.catch((err) => {
+    document.querySelector(".titles").innerHTML = "<h1>erreur 404</h1>";
+    console.log("erreur 404, sur ressource api:" + err);
+});
 
 let affichageProduit = function (produit){
     // Création et remplissage balise img //
@@ -57,7 +61,7 @@ let getCanape = function(){
     } else {
         return JSON.parse(canape)
     }
-}
+} 
 
 // Fonction qui ajoute un canapé dans localStorage en JSON //
 let addCanape = function(canape){
@@ -109,11 +113,13 @@ let ajouterPanier = function (produit){
 // Fonction pour calculer et afficher le nombre total d'article dans le panier // 
 let totalArticle = function() {
     let somme = 0
+    if (produitPaniers != null){
     for (produit of produitPaniers){
         var nbrQuantite = parseInt(produit.quantité);
         somme += nbrQuantite
     }
     let panier = document.querySelectorAll('nav a li')
     panier[1].innerHTML = "panier " + '(' + somme + ')';
+}
 }
     
