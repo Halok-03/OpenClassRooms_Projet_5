@@ -1,5 +1,5 @@
 const produitPaniersStorage = JSON.parse(localStorage.getItem('produitPanier'));// Recupere le localstorage et le met en tableau d'objet //
-let productsWithPrice = []; // Créer un tableau vide pour stocker id , quantité et prix des produits dans le panier //
+let productsWithPrice = []; // Créer un tableau vide pour stocker id , quantité et prix des produits //
 
 if (produitPaniersStorage != null && produitPaniersStorage != undefined){
     for (let produitPanier of produitPaniersStorage) {
@@ -8,14 +8,11 @@ if (produitPaniersStorage != null && produitPaniersStorage != undefined){
             return response.json();
         })
         .then (function(canape){
-            productsWithPrice.push({id: produitPanier.id, quantite: produitPanier.quantité, price: canape.price});
+            productsWithPrice.push({id: produitPanier.id, quantite: produitPanier.quantité, price: canape.price, couleur : produitPanier.couleur});
             affichagePanier(canape, produitPanier);
-            totalArticle();
-            additionTotal()
         })
         .catch((err) => {
-            document.querySelector(".titles").innerHTML = "<h1>erreur 404</h1>";
-            console.log("erreur 404, sur ressource api:" + err);
+            console.log('Il y a eu un problème avec l\'opération fetch: ' + err);
         });
     }
 } else {
@@ -103,7 +100,11 @@ let affichagePanier = function(canape, localStore) {
 
     document.querySelector('#cart__items').appendChild(articleHtml);
 
+    // Appel du total quantité , total prix , de la fonction pour supprimer et de la fonction pour modifier la quantité//
+    totalArticle();
+    additionTotal()
     supprimerProduit(supprimerHtml)
+    modifQuantite(inputQuantiteHtml)
     }
 
 
@@ -117,7 +118,7 @@ let totalArticle = function() {
     }
     document.querySelector('#totalQuantity').innerHTML = somme;
     let panier = document.querySelectorAll('nav a li')
-    panier[1].innerHTML = "panier " + '(' + somme + ')';
+    panier[1].innerHTML = "Panier " + '(' + somme + ')';
 }
 
 
@@ -158,9 +159,42 @@ let supprimerProduit = function(elementHtml){
                 // Si l'élément que nous venons de supprimer était le dernier on affiche que le panier est vide et on supprime intégralement le localStorage afin que quand on actualise la page il s'affiche encore//
                 if (produitPaniersStorage.length == 0){
                     document.querySelector("h1").innerHTML = "Votre panier est vide"
+                    let panier = document.querySelectorAll('nav a li')
+                    panier[1].innerHTML = "Panier";
                     localStorage.clear();
                 }
 
     }})
 }
+
+let modifQuantite = function(elementHTML){
+    elementHTML.addEventListener('change', function(){
+        // On récupère l'id et la couleur du produit qu'on modifie //
+        let idElement = elementHTML.closest("article").dataset.id
+        let couleurElement = elementHTML.closest("article").dataset.color
+        // Si la quantité qu'on rentre n'est pas comprise entre 1 et 100 alors //
+        if (elementHTML.value <1 || elementHTML.value >100){
+            alert("Veuillez saisir une quantité comprise entre 1 et 100")  // On créer une alerte pour averir //
+            // Et on assigne a elementHTML l'ancienne value //
+            for (let i = 0 ; i < productsWithPrice.length ; i++){
+                if (productsWithPrice[i].id == idElement && couleurElement == productsWithPrice[i].couleur){
+                    elementHTML.value = productsWithPrice[i].quantite
+                }
+            }
+            // Si la quantité saisie est bonne alors on assigne au localStorage et au tableau productsWithPrice la nouvelle quantité //
+        } else {
+            for (let i = 0 ; i < productsWithPrice.length ; i++){
+                if (productsWithPrice[i].id == idElement && couleurElement == productsWithPrice[i].couleur && produitPaniersStorage[i].id == idElement && produitPaniersStorage[i].couleur == couleurElement){
+                    productsWithPrice[i].quantite = elementHTML.value
+                    produitPaniersStorage[i].quantité = elementHTML.value
+                    localStorage.setItem("produitPanier", JSON.stringify(produitPaniersStorage));
+                }
+            }
+            // On refait appel au fonction pour calculer la nouvelle quantité et le nouveau prix afin de ne pas avoir a réactualiser la page // 
+            totalArticle()
+            additionTotal()
+        }
+    })
+}
+    
 

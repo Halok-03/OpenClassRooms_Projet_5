@@ -15,8 +15,7 @@ fetch(`http://localhost:3000/api/products/${id}`)
     totalArticle()
 })
 .catch((err) => {
-    document.querySelector(".titles").innerHTML = "<h1>erreur 404</h1>";
-    console.log("erreur 404, sur ressource api:" + err);
+    console.log('Il y a eu un problème avec l\'opération fetch: ' + err);
 });
 
 let affichageProduit = function (produit){
@@ -119,7 +118,7 @@ let totalArticle = function() {
         somme += nbrQuantite
     }
     let panier = document.querySelectorAll('nav a li')
-    panier[1].innerHTML = "panier " + '(' + somme + ')';
+    panier[1].innerHTML = "Panier " + '(' + somme + ')';
 }
 }
     
