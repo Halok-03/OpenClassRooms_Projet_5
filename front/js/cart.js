@@ -173,7 +173,7 @@ let modifQuantite = function(elementHTML){
         let idElement = elementHTML.closest("article").dataset.id
         let couleurElement = elementHTML.closest("article").dataset.color
         // Si la quantité qu'on rentre n'est pas comprise entre 1 et 100 alors //
-        if (elementHTML.value <1 || elementHTML.value >100){
+        if (elementHTML.value < 1 || elementHTML.value > 100){
             alert("Veuillez saisir une quantité comprise entre 1 et 100")  // On créer une alerte pour averir //
             // Et on assigne a elementHTML l'ancienne value //
             for (let i = 0 ; i < productsWithPrice.length ; i++){
@@ -197,4 +197,196 @@ let modifQuantite = function(elementHTML){
     })
 }
     
+// Envoi du formulaire et commande //
 
+// Mettre dans une variable le formulaire //
+let form = document.querySelector('.cart__order__form');
+
+// Stocker si les inputs sont valides //
+let inputIsValid = {
+    firstName: false,
+    lastName: false,
+    address: false,
+    city: false,
+    email: false,
+}
+
+// Ecoute Prénom //
+form.firstName.addEventListener('change', function() {
+  validFirstName(this);
+});
+
+// Ecoute Nom de famille // 
+form.lastName.addEventListener('change', function () {
+  validLastName(this);
+});
+
+// Ecoute Adresse //
+form.address.addEventListener('change', function () {
+  validAddress(this);
+})
+
+// Ecoute Ville //
+form.city.addEventListener('change', function () {
+  validCity(this);
+})
+
+// Ecoute Email //
+form.email.addEventListener('change', function() {
+    validEmail(this);
+});
+
+// Validation prénom // 
+let validFirstName = function(inputFirstName){
+    let firstNameRegExp =new RegExp("(^[a-zA-Zéè -]{2,20}$)")
+    let testFirstName = firstNameRegExp.test(inputFirstName.value);
+    let firstNameMsg = document.querySelector('#firstNameErrorMsg');
+    if (testFirstName == true){
+        firstNameMsg.innerHTML ='Prénom Valide';
+        firstNameMsg.style.color = '#96ffa7';
+        inputIsValid.firstName = true
+        return true;
+    }else {
+        firstNameMsg.innerHTML ='Le prénom n\'est pas Valide';
+        firstNameMsg.style.color = "#fbbcbc"
+        return false;
+    }
+}
+
+// Validation nom // 
+let validLastName = function (inputLastName){
+    let lastNameRegExp = new RegExp('^[^±!@£$%^&*_+§¡€#¢§¶•ªº«\\/<>?:;|=.,]{2,30}$');
+    let testLastName = lastNameRegExp.test(inputLastName.value);
+    let lastNameMsg = document.querySelector('#lastNameErrorMsg');
+    if (testLastName == true){
+        lastNameMsg.innerHTML ='Nom Valide';
+        lastNameMsg.style.color = '#96ffa7';
+        inputIsValid.lastName = true
+        return true;
+    }else {
+        lastNameMsg.innerHTML ='Le nom n\'est pas Valide';
+        lastNameMsg.style.color = "#fbbcbc"
+        return false;
+    }
+}
+
+// Validation adresse //
+let validAddress = function(inputAdress){
+    let addressRegExp = new RegExp("(^[a-zA-Zéè 0-9,-]{4,50}$)");
+    let testAddress = addressRegExp.test(inputAdress.value);
+    let adressMsg = document.querySelector('#addressErrorMsg');
+    if (testAddress == true){
+        adressMsg.innerHTML ='Adresse Valide';
+        adressMsg.style.color = '#96ffa7';
+        inputIsValid.address = true
+        return true;
+    }else {
+        adressMsg.innerHTML ='Adresse Non Valide';
+        adressMsg.style.color = "#fbbcbc"
+        return false;
+    }
+}
+
+// Validation ville // 
+let validCity = function(inputCity){
+    let cityRegExp = new RegExp(`^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$`);
+    let testCity = cityRegExp.test(inputCity.value);
+    let cityMsg = document.querySelector('#cityErrorMsg');
+    if (testCity == true){
+        cityMsg.innerHTML ='Ville Valide';
+        cityMsg.style.color = '#96ffa7';
+        inputIsValid.city = true
+        return true;
+    }else {
+        cityMsg.innerHTML ='Ville Non Valide';
+        cityMsg.style.color = "#fbbcbc"
+        return false;
+    }
+}
+
+// Validation mail // 
+let validEmail = function(inputEmail){
+    let mailRegExp = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$', 'g');
+    let testMail = mailRegExp.test(inputEmail.value);
+    let emailMsg = document.querySelector('#emailErrorMsg');
+    if (testMail == true){
+        emailMsg.innerHTML ='Adresse Mail Valide';
+        emailMsg.style.color = '#96ffa7';
+        inputIsValid.email = true
+        return true;
+    }else {
+        emailMsg.innerHTML ='Adresse Mail Non Valide';
+        emailMsg.style.color = "#fbbcbc"
+        return false;
+    }
+}
+
+form.addEventListener('submit',function(e){
+    e.preventDefault();
+
+// Si le panier contient au moins un produit et que les informations saisies sont correctes alors on exécute //
+if (produitPaniersStorage != null && produitPaniersStorage != undefined && inputIsValid.firstName == true && inputIsValid.lastName == true && inputIsValid.address == true && inputIsValid.city == true && inputIsValid.email == true){
+    getPost()
+}
+// Si le panier est vide alors l'envoi ne se fait pas et on affiche un message d'erreur //
+else if (produitPaniersStorage == null || produitPaniersStorage == undefined){
+    alert('Votre panier est vide')
+}
+// Si les informations saisies ne sont pas valides alors l'envoi ne se fait pas et on affiche un message d'erreur //
+else if (inputIsValid.firstName == true || inputIsValid.lastName == true || inputIsValid.address == true || inputIsValid.city == true || inputIsValid.email == true){
+    alert("Vos informations saisies ne sont pas correctes")
+}
+})
+
+let getPost = function(){
+
+    // Création du tableau product-ID contenant les id de tout nos produits //
+    let productID = [];
+
+    //Pour chaque produit dans mon panier on ajoute l'id au tableau productID // 
+    for(let produitPanier of produitPaniersStorage){
+        productID.push(produitPanier.id)
+    }
+
+    // Création objet contact //
+    let contact = {
+        firstName : firstName.value,
+        lastName : lastName.value, 
+        address : address.value,
+        city : city.value, 
+        email : email.value,
+    }
+    
+    // On créer un objet order que nous envoyons à la soumission du formulaire contenant les données du contact et les ID des produits //
+    let order = {
+        contact : contact,
+        products : productID
+    }
+
+    // On envoie le order en methode post //
+    fetch("http://localhost:3000/api/products/order", {
+        method: "POST",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(order),
+    })
+        .then((res) => {
+            if (res.status == 201) {
+                alert("Votre commande a bien été validée");
+                return res.json();
+            } else if (res.status !== 201) {
+                alert(
+                    "une erreur est survenue lors de l'envoi du formulaire, veuillez réessayer"
+                );
+            }
+        })
+        .then((res) => {
+            // Vide le localStorage
+            localStorage.clear();
+            // Ouvre la page de confirmation avec le numéro de commande dans l'URL
+            window.location.href = `../html/confirmation.html?order_id=${res.orderId}`;
+        })
+        .catch((error) => console.log("Erreur : " + error));
+}
