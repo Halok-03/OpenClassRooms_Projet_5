@@ -238,7 +238,7 @@ form.email.addEventListener('change', function() {
 
 // Validation prénom // 
 let validFirstName = function(inputFirstName){
-    let firstNameRegExp =new RegExp("(^[a-zA-Zéè -]{2,20}$)")
+    let firstNameRegExp =new RegExp('^[^±!@£$%^&*_+§¡€#¢§¶•ªº«\\/<>?:;|=.,0123456789]{2,30}$')
     let testFirstName = firstNameRegExp.test(inputFirstName.value);
     let firstNameMsg = document.querySelector('#firstNameErrorMsg');
     if (testFirstName == true){
@@ -249,13 +249,14 @@ let validFirstName = function(inputFirstName){
     }else {
         firstNameMsg.innerHTML ='Le prénom n\'est pas Valide';
         firstNameMsg.style.color = "#fbbcbc"
+        inputIsValid.firstName = false
         return false;
     }
 }
 
 // Validation nom // 
 let validLastName = function (inputLastName){
-    let lastNameRegExp = new RegExp('^[^±!@£$%^&*_+§¡€#¢§¶•ªº«\\/<>?:;|=.,]{2,30}$');
+    let lastNameRegExp = new RegExp('^[^±!@£$%^&*_+§¡€#¢§¶•ªº«\\/<>?:;|=.,0123456789]{2,30}$');
     let testLastName = lastNameRegExp.test(inputLastName.value);
     let lastNameMsg = document.querySelector('#lastNameErrorMsg');
     if (testLastName == true){
@@ -266,6 +267,7 @@ let validLastName = function (inputLastName){
     }else {
         lastNameMsg.innerHTML ='Le nom n\'est pas Valide';
         lastNameMsg.style.color = "#fbbcbc"
+        inputIsValid.lastName = false
         return false;
     }
 }
@@ -283,6 +285,7 @@ let validAddress = function(inputAdress){
     }else {
         adressMsg.innerHTML ='Adresse Non Valide';
         adressMsg.style.color = "#fbbcbc"
+        inputIsValid.address = false
         return false;
     }
 }
@@ -300,6 +303,7 @@ let validCity = function(inputCity){
     }else {
         cityMsg.innerHTML ='Ville Non Valide';
         cityMsg.style.color = "#fbbcbc"
+        inputIsValid.city = false
         return false;
     }
 }
@@ -317,6 +321,7 @@ let validEmail = function(inputEmail){
     }else {
         emailMsg.innerHTML ='Adresse Mail Non Valide';
         emailMsg.style.color = "#fbbcbc"
+        inputIsValid.email = false
         return false;
     }
 }
@@ -358,7 +363,7 @@ let getPost = function(){
     }
     
     // On créer un objet order que nous envoyons à la soumission du formulaire contenant les données du contact et les ID des produits //
-    let order = {
+    let data = {
         contact : contact,
         products : productID
     }
@@ -370,7 +375,7 @@ let getPost = function(){
             Accept: "application/json",
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(order),
+        body: JSON.stringify(data),
     })
         .then((res) => {
             if (res.status == 201) {
