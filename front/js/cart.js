@@ -338,7 +338,7 @@ else if (produitPaniersStorage == null || produitPaniersStorage == undefined){
     alert('Votre panier est vide')
 }
 // Si les informations saisies ne sont pas valides alors l'envoi ne se fait pas et on affiche un message d'erreur //
-else if (inputIsValid.firstName == true || inputIsValid.lastName == true || inputIsValid.address == true || inputIsValid.city == true || inputIsValid.email == true){
+else if (inputIsValid.firstName == false || inputIsValid.lastName == false || inputIsValid.address == false || inputIsValid.city == false || inputIsValid.email == false){
     alert("Vos informations saisies ne sont pas correctes")
 }
 })
