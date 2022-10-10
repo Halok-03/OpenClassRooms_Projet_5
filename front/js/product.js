@@ -31,6 +31,8 @@ let affichageProduit = function (produit){
     document.querySelector('#price').innerHTML = `${produit.price}`;
     // Affichage bonne description // 
     document.querySelector('#description').innerHTML = `${produit.description}`;
+    // On affiche également le nom du produit présent dans le title d'onglet //
+    document.querySelector('title').innerHTML = `${produit.name}`
     // Affichage couleur pour chaque couleur dans l'objet colors de produit //
     for (couleur of produit.colors) {
         choixCouleur(couleur);
@@ -77,6 +79,7 @@ let addCanape = function(canape){
         newcanape.push(canape); 
         saveCanape(newcanape);
         alert("Vous avez bien ajouté l'article au panier !")
+        location.reload()
 
     // Si la quantité saisie est bonne et que le produit est deja présent on ajoute la quantité saisie à la quantité deja enregistrer // 
     } else {
@@ -91,6 +94,7 @@ let addCanape = function(canape){
         } else {
             saveCanape(newcanape);
             alert("La quantité a bien été mis à jour !")
+            location.reload()
         }       
     }
 }
@@ -105,7 +109,6 @@ let ajouterPanier = function (produit){
             quantité : document.getElementById("quantity").value,
         }
         addCanape(canape)
-        location.reload()
     })
     }
 
