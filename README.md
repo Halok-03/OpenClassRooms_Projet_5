@@ -2,7 +2,7 @@
 
 Projet 5 OpenClassRooms. Construire un site e-commerce en Javascript
 
-#Objectifs
+# Objectifs #
 
 - Créer un plan de test pour une application
 - Valider des données issues de sources externes
